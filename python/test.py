@@ -1,10 +1,18 @@
+import sys
 from poco.utils.device import VirtualDevice
 from poco.drivers.std import StdPoco
+
+platform = None # defaults to Android
+if len(sys.argv) > 1:
+    platform = sys.argv[1]
+
 
 DEFAULT_ADDRESS = ("0.0.0.0", 15004)
 
 # if target is macOS, use a virtual device
-device = VirtualDevice(DEFAULT_ADDRESS[0])
+device = None
+if platform in ('macOS',):
+    device = VirtualDevice(DEFAULT_ADDRESS[0])
 
 poco = StdPoco(addr=DEFAULT_ADDRESS, device=device, use_airtest_input=False)
 
