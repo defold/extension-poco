@@ -39,4 +39,8 @@ print("children", children)
 print("exists", node_name, poco(node_name).exists())
 print("exists", "not_exist", poco("not_exist").exists())
 
+cbk = poco.agent.rpc.call("TestNewFunction", 1, 2, 3)
+cbk.wait()
+print("TestNewFunction: %s" % cbk.result)
+
 print("poco.py:", "done.")

@@ -77,6 +77,9 @@ local dispatcher = {
     -- TODO: Add hooks to call functions and send events
 }
 
+local callbacks = {
+}
+
 
 function PocoManager:init_server(port)
     port = port or 15004
@@ -138,11 +141,21 @@ function PocoManager:server_loop()
     end
 end
 
+
+function PocoManager:setDispatchFn(method, fn)
+    dispatcher[method] = fn
+end
+
+function PocoManager:setDispatchCallbackFn(method, fn)
+    callbacks[method] = fn
+end
+
 function PocoManager:onRequest(req)
     local client = req.client
     local method = req.method
     local params = req.params
     local func = dispatcher[method]
+    local client_callback = callbacks[method]
     local ret = {
         id = req.id,
         jsonrpc = req.jsonrpc,
@@ -162,6 +175,15 @@ function PocoManager:onRequest(req)
                 end)
                 return
             else
+                if client_callback ~= nil then
+                    local newresult = client_callback(result)
+                    if newresult == nil then
+                        local err = string.format('Client callback for rpc method "%s" returned `nil`', method)
+                        print("[poco] Error: ", err)
+                    else
+                        result = newresult
+                    end
+                end
                 ret.result = result
                 client:send(ret)
             end
