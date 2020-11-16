@@ -117,8 +117,12 @@ local dispatcher = {
     --     return false
     -- end,
     Execute = function(msg)
-
-        return string.format('test arg1:%s arg2:%s', arg1, arg2)
+        local f = loadstring(msg)
+        local res = f()
+        if res ~= nil then
+            return res
+        end
+        return ""
     end,
 
     -- TODO: Add hooks to call functions and send events

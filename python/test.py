@@ -48,6 +48,9 @@ for child in poco(node_name).children():
 # children = poco(node_name).children()
 # print("children", children)
 
+cbk = poco.agent.rpc.call("Execute", "go.animate('/go', 'euler.z', go.PLAYBACK_LOOP_FORWARD, 360, go.EASING_LINEAR, 2)")
+cbk.wait()
+print("Execute: %s" % cbk.result)
 
 # cbk = poco.agent.rpc.call("TestNewFunction", 1, 2, 3)
 # cbk.wait()
