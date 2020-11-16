@@ -1,4 +1,4 @@
-import sys
+import sys, json
 from poco.utils.device import VirtualDevice
 from poco.drivers.std import StdPoco
 
@@ -16,31 +16,43 @@ if platform in ('macOS',):
 
 poco = StdPoco(addr=DEFAULT_ADDRESS, device=device, use_airtest_input=False)
 
-#ui = poco.agent.hierarchy.dump()
-#print(json.dumps(ui, indent=4))
+ui = poco.agent.hierarchy.dump()
+print(json.dumps(ui, indent=4))
 
-print("poco.py:", "get_screen_size", poco.get_screen_size())
+#print("poco.py:", "get_screen_size", poco.get_screen_size())
 
 # For UIObjectProxy documentation, see https://poco-chinese.readthedocs.io/en/latest/source/poco.proxy.html
 
-node_name = 'OctopusArea'
 
-poco(node_name).click(sleep_interval=0.001)
+#node_name = 'OctopusArea'
+#node_name = 'child1'
+node_name = '/bg'
 
-poco(node_name).drag_to((0.5, 0.5), duration=0.4)
+# print("exists", "not_exist", poco("not_exist").exists())
+# print("exists", node_name, poco(node_name).exists())
 
-print("get_name", poco(node_name).get_name())
-print("get_text", poco(node_name).get_text())
-print("get_bounds", poco(node_name).get_bounds())
+#print poco(node_name).child('child1').attr('name')
 
-children = poco(node_name).children()
-print("children", children)
+print "Children"
+for child in poco(node_name).children():
+    print "  ", child.attr('name')
 
-print("exists", node_name, poco(node_name).exists())
-print("exists", "not_exist", poco("not_exist").exists())
+# poco(node_name).poco("/go").click(sleep_interval=0.001)
 
-cbk = poco.agent.rpc.call("TestNewFunction", 1, 2, 3)
-cbk.wait()
-print("TestNewFunction: %s" % cbk.result)
+# poco(node_name).drag_to((0.5, 0.5), duration=0.4)
+
+# print("get_name", poco(node_name).get_name())
+# print("get_text", poco(node_name).get_text())
+# print("get_bounds", poco(node_name).get_bounds())
+
+# children = poco(node_name).children()
+# print("children", children)
+
+
+# cbk = poco.agent.rpc.call("TestNewFunction", 1, 2, 3)
+# cbk.wait()
+# print("TestNewFunction: %s" % cbk.result)
 
 print("poco.py:", "done.")
+
+

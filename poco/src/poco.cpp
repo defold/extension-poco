@@ -2,8 +2,10 @@
 #include <dmsdk/dlib/json.h>
 #include <dmsdk/dlib/webserver.h>
 #include "json.h"
+#include "dump.h"
 
-#define LIB_NAME "poco"
+#define MODULE_NAME Poco
+#define LIB_NAME "poco_helper"
 #define HTTP_PATH "/poco"
 
 
@@ -18,6 +20,7 @@ struct PocoContext
     uint32_t    m_BufferCapacity;
     dmJson::Document m_DocReceived; // The current request
     bool        m_Initialized;
+    dmGameObject::HRegister m_Register;
 } g_Poco;
 
 static dmJson::Document* ParseRequest(PocoContext* ctx)
@@ -30,15 +33,6 @@ static dmJson::Document* ParseRequest(PocoContext* ctx)
     }
     return &ctx->m_DocReceived;
 }
-
-// static const char* GetString(dmJson::Document* doc, dmJson::Node* n, const char*)
-// {
-//     if (n->m_Type != dmJson::TYPE_STRING)
-//         return 0;
-
-
-// }
-
 
 static dmWebServer::Result ReadHttpContent(PocoContext* ctx, dmWebServer::Request* request)
 {
@@ -227,6 +221,37 @@ static void HttpHandler(void* user_data, dmWebServer::Request* request)
     dmWebServer::SetStatusCode(request, 404);
 }
 
+static int Poco_Dump(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 1);
+
+    bool only_visible_node = false;
+    if (lua_isboolean(L, 1))
+        only_visible_node = lua_toboolean(L, 1);
+    else
+        return DM_LUA_ERROR("Expected boolean for argument 1");
+
+    // Creates a table
+    dmPoco::DumpToLuaTable(g_Poco.m_Register, L);
+
+    return 1;
+}
+
+// Functions exposed to Lua
+static const luaL_reg Poco_module_methods[] =
+{
+    {"dump", Poco_Dump},
+    {0, 0}
+};
+
+static void LuaInit(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 0);
+    luaL_register(L, LIB_NAME, Poco_module_methods);
+    lua_pop(L, 1);
+}
+
+
 static dmExtension::Result AppInitialize(dmExtension::AppParams* params)
 {
     memset(&g_Poco, 0, sizeof(g_Poco));
@@ -235,18 +260,19 @@ static dmExtension::Result AppInitialize(dmExtension::AppParams* params)
         dmLogWarning("Engine is built with extension '%s', but there is no webserver available. Is this a release build?", LIB_NAME);
         return dmExtension::RESULT_OK;
     }
-
-    dmWebServer::HandlerParams handler_params;
-    handler_params.m_Userdata = (void*)&g_Poco;
-    handler_params.m_Handler = HttpHandler;
-    dmWebServer::Result result = dmWebServer::AddHandler(params->m_WebServer, HTTP_PATH, &handler_params);
-    if (dmWebServer::RESULT_OK != result)
-    {
-        dmLogError("Failed to register http handler for '%s'", HTTP_PATH);
-        return dmExtension::RESULT_OK; // it's not a fatal error
+    else {
+        dmWebServer::HandlerParams handler_params;
+        handler_params.m_Userdata = (void*)&g_Poco;
+        handler_params.m_Handler = HttpHandler;
+        dmWebServer::Result result = dmWebServer::AddHandler(params->m_WebServer, HTTP_PATH, &handler_params);
+        if (dmWebServer::RESULT_OK != result)
+        {
+            dmLogError("Failed to register http handler for '%s'", HTTP_PATH);
+            return dmExtension::RESULT_OK; // it's not a fatal error
+        }
     }
 
-    dmLogInfo("Registered %s extension", LIB_NAME);
+    g_Poco.m_Register = params->m_GameObjectRegister;
     g_Poco.m_Initialized = true;
     return dmExtension::RESULT_OK;
 }
@@ -256,6 +282,9 @@ static dmExtension::Result Initialize(dmExtension::Params* params)
 {
     if (!g_Poco.m_Initialized)
         return dmExtension::RESULT_OK;
+
+    LuaInit(params->m_L);
+    dmLogInfo("Registered %s extension", LIB_NAME);
 
     return dmExtension::RESULT_OK;
 }
@@ -284,7 +313,7 @@ static dmExtension::Result OnUpdate(dmExtension::Params* params)
 
 }
 
-DM_DECLARE_EXTENSION(Poco, "poco", dmPoco::AppInitialize, dmPoco::AppFinalize, dmPoco::Initialize, dmPoco::OnUpdate, 0, dmPoco::Finalize)
+DM_DECLARE_EXTENSION(MODULE_NAME, LIB_NAME, dmPoco::AppInitialize, dmPoco::AppFinalize, dmPoco::Initialize, dmPoco::OnUpdate, 0, dmPoco::Finalize)
 
 #undef LIB_NAME
 #undef HTTP_PATH

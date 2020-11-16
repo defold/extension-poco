@@ -1,7 +1,5 @@
 
 local VERSION = require('poco.lua.POCO_SDK_VERSION')
--- local Dumper = import('.Cocos2dxFrozenDumper')
--- local Screen = import('.Cocos2dxScreen')
 local ClientConnection = require('poco.lua.ClientConnection')
 
 local PocoManager = {}
@@ -14,8 +12,6 @@ PocoManager.server_sock = nil
 PocoManager.all_socks = {}
 PocoManager.clients = {}
 
-
-
 -- rpc methods registration
 local dispatcher = {
     GetSDKVersion = function() return VERSION end,
@@ -24,6 +20,13 @@ local dispatcher = {
         if onlyVisibleNode == nil then
             onlyVisibleNode = true
         end
+
+        if poco_helper ~=nil then
+            return poco_helper.dump(onlyVisibleNode)
+        else
+            return "No poco_helper extension found!"
+        end
+
         --return Dumper:dumpHierarchy(onlyVisibleNode)
         local result = {}
         result['name'] = 'OctopusArea'
@@ -32,13 +35,57 @@ local dispatcher = {
         result['payload']['type'] = 'GameObject'
         result['payload']['visible'] = true
         result['payload']['clickable'] = true
-        result['payload']['zOrders'] = {}
-        result['payload']['zOrders']['global'] = 0
-        result['payload']['zOrders']['local'] = -10
-        result['payload']['scale'] = {1, 1}
-        result['payload']['anchorPoint'] = {0.5, 0.5}
+        --result['payload']['zOrders'] = {}
+        --result['payload']['zOrders']['global'] = 0
+        --result['payload']['zOrders']['local'] = -10
+        --result['payload']['scale'] = {1, 1}
+        --result['payload']['anchorPoint'] = {0.5, 0.5}
         result['payload']['pos'] = {0.130729169, 0.44907406}
-        result['payload']['size'] = {0.0859375, 0.125}
+        --result['payload']['size'] = {0.0859375, 0.125}
+
+        --result['payload']['children'] = {}
+        result['children'] = {}
+
+
+        local child = {}
+        child['name'] = 'child1'
+        child['payload'] = {}
+        child['payload']['name'] = 'child1'
+        child['payload']['type'] = 'GameObject'
+        child['payload']['visible'] = true
+        child['payload']['clickable'] = true
+        --child['payload']['zOrders'] = {}
+        --child['payload']['zOrders']['global'] = 0
+        --child['payload']['zOrders']['local'] = -10
+        --child['payload']['scale'] = {1, 1}
+        --child['payload']['anchorPoint'] = {0.5, 0.5}
+        child['payload']['pos'] = {0.130729169, 0.44907406}
+        --child['payload']['size'] = {0.0859375, 0.125}
+
+        --table.insert(result['payload']['children'], child)
+        --result['payload']['children'][child['name']] = child
+        --result['children'][child['name']] = child
+        child['children'] = {}
+
+        table.insert(result['children'], child)
+
+
+        local child2 = {}
+        child2['name'] = 'child21'
+        child2['payload'] = {}
+        child2['payload']['name'] = 'child2'
+        child2['payload']['type'] = 'GameObject'
+        child2['payload']['visible'] = true
+        child2['payload']['clickable'] = true
+        child2['payload']['pos'] = {0.130729169, 0.44907406}
+        --child2['payload']['size'] = {0.0859375, 0.125}
+
+        --table.insert(result['payload']['child2ren'], child2)
+        --result['payload']['child2ren'][child2['name']] = child2
+        child2['children'] = {}
+
+        table.insert(child['children'], child2)
+
         return result
     end,
     Click = function(x, y)
