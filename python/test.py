@@ -34,10 +34,10 @@ node_name = '/bg'
 #print poco(node_name).child('child1').attr('name')
 
 print "Children"
-for child in poco(node_name).children():
-    print "  ", child.attr('name')
+for child in poco("main").children():
+    print "  ", child.attr('name'), child.attr('type'), child.attr('text')
 
-# poco(node_name).poco("/go").click(sleep_interval=0.001)
+poco("/go").poco("logo").click(sleep_interval=0.001)
 
 # poco(node_name).drag_to((0.5, 0.5), duration=0.4)
 
@@ -48,13 +48,15 @@ for child in poco(node_name).children():
 # children = poco(node_name).children()
 # print("children", children)
 
-cbk = poco.agent.rpc.call("Execute", "go.animate('/go', 'euler.z', go.PLAYBACK_LOOP_FORWARD, 360, go.EASING_LINEAR, 2)")
-cbk.wait()
-print("Execute: %s" % cbk.result)
+# Executed in the context of the main.script, where the server is currrently run
+#cbk = poco.agent.rpc.call("Execute", "go.animate('/go', 'euler.z', go.PLAYBACK_LOOP_FORWARD, 360, go.EASING_LINEAR, 2)")
+#cbk.wait()
+#print("Execute: %s" % cbk.result)
 
+# testing the new client defined function from main.script
 # cbk = poco.agent.rpc.call("TestNewFunction", 1, 2, 3)
 # cbk.wait()
-# print("TestNewFunction: %s" % cbk.result)
+#print("TestNewFunction: %s" % cbk.result)
 
 print("poco.py:", "done.")
 
