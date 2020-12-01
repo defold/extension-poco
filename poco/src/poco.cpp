@@ -1,8 +1,10 @@
 #include <dmsdk/sdk.h>
 #include <dmsdk/dlib/json.h>
 #include <dmsdk/dlib/webserver.h>
+#include <dmsdk/hid/hid.h>
 #include "json.h"
 #include "dump.h"
+#include "input.h"
 
 #define MODULE_NAME Poco
 #define LIB_NAME "poco_helper"
@@ -15,12 +17,15 @@ namespace dmPoco
 
 struct PocoContext
 {
-    char*       m_Buffer;
-    uint32_t    m_BufferSize;
-    uint32_t    m_BufferCapacity;
-    dmJson::Document m_DocReceived; // The current request
-    bool        m_Initialized;
+    char*               m_Buffer;
+    uint32_t            m_BufferSize;
+    uint32_t            m_BufferCapacity;
+    dmJson::Document    m_DocReceived; // The current request
+    bool                m_Initialized;
+    uint64_t            m_LastTime;
+
     dmGameObject::HRegister m_Register;
+    dmHID::HContext         m_HidContext;
 } g_Poco;
 
 static dmJson::Document* ParseRequest(PocoContext* ctx)
@@ -237,10 +242,57 @@ static int Poco_Dump(lua_State* L)
     return 1;
 }
 
+static int Poco_Click(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 0);
+
+    lua_Number x = luaL_checknumber(L, 1);
+    lua_Number y = luaL_checknumber(L, 2);
+
+    dmPoco::Click((int32_t)x, (int32_t)y);
+
+    return 0;
+}
+
+static int Poco_LongClick(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 0);
+
+    lua_Number x = luaL_checknumber(L, 1);
+    lua_Number y = luaL_checknumber(L, 2);
+    lua_Number duration = luaL_checknumber(L, 3);
+    if (duration <= 0.0f)
+        return DM_LUA_ERROR("Duration must be > 0.0. Duration: %f", duration);
+
+    dmPoco::LongClick(x, y, duration);
+
+    return 0;
+}
+
+static int Poco_Swipe(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 0);
+
+    lua_Number x1 = luaL_checknumber(L, 1);
+    lua_Number y1 = luaL_checknumber(L, 2);
+    lua_Number x2 = luaL_checknumber(L, 3);
+    lua_Number y2 = luaL_checknumber(L, 4);
+    lua_Number duration = luaL_checknumber(L, 5);
+    if (duration <= 0.0f)
+        return DM_LUA_ERROR("Duration must be > 0.0. Duration: %f", duration);
+
+    dmPoco::Swipe(x1, y1, x2, y2, duration);
+
+    return 0;
+}
+
 // Functions exposed to Lua
 static const luaL_reg Poco_module_methods[] =
 {
     {"dump", Poco_Dump},
+    {"click", Poco_Click},
+    {"long_click", Poco_LongClick},
+    {"swipe", Poco_Swipe},
     {0, 0}
 };
 
@@ -254,9 +306,11 @@ static void LuaInit(lua_State* L)
 
 static dmExtension::Result AppInitialize(dmExtension::AppParams* params)
 {
+    dmWebServer::HServer web_server = dmEngine::GetWebServer(params);
+
     memset(&g_Poco, 0, sizeof(g_Poco));
 
-    if (!params->m_WebServer) {
+    if (!web_server) {
         dmLogWarning("Engine is built with extension '%s', but there is no webserver available. Is this a release build?", LIB_NAME);
         return dmExtension::RESULT_OK;
     }
@@ -264,7 +318,7 @@ static dmExtension::Result AppInitialize(dmExtension::AppParams* params)
         dmWebServer::HandlerParams handler_params;
         handler_params.m_Userdata = (void*)&g_Poco;
         handler_params.m_Handler = HttpHandler;
-        dmWebServer::Result result = dmWebServer::AddHandler(params->m_WebServer, HTTP_PATH, &handler_params);
+        dmWebServer::Result result = dmWebServer::AddHandler(web_server, HTTP_PATH, &handler_params);
         if (dmWebServer::RESULT_OK != result)
         {
             dmLogError("Failed to register http handler for '%s'", HTTP_PATH);
@@ -272,8 +326,11 @@ static dmExtension::Result AppInitialize(dmExtension::AppParams* params)
         }
     }
 
-    g_Poco.m_Register = params->m_GameObjectRegister;
+    g_Poco.m_Register = dmEngine::GetGameObjectRegister(params);
+    g_Poco.m_HidContext = dmEngine::GetHIDContext(params);
+    g_Poco.m_LastTime = dmTime::GetTime();
     g_Poco.m_Initialized = true;
+
     return dmExtension::RESULT_OK;
 }
 
@@ -293,7 +350,7 @@ static dmExtension::Result AppFinalize(dmExtension::AppParams* params)
 {
     if (g_Poco.m_Initialized)
     {
-        dmWebServer::RemoveHandler(params->m_WebServer, HTTP_PATH);
+        dmWebServer::RemoveHandler(dmEngine::GetWebServer(params), HTTP_PATH);
     }
     return dmExtension::RESULT_OK;
 }
@@ -306,7 +363,14 @@ static dmExtension::Result Finalize(dmExtension::Params* params)
 static dmExtension::Result OnUpdate(dmExtension::Params* params)
 {
     if (!g_Poco.m_Initialized)
+
         return dmExtension::RESULT_OK;
+
+    uint64_t time = dmTime::GetTime();
+    double dt = (time - g_Poco.m_LastTime) / 1000000.0f;
+    g_Poco.m_LastTime = time;
+
+    dmPoco::UpdateInput(g_Poco.m_HidContext, dt);
 
     return dmExtension::RESULT_OK;
 }

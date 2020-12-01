@@ -16,7 +16,6 @@ PocoManager.clients = {}
 local dispatcher = {
     GetSDKVersion = function() return VERSION end,
     Dump = function(onlyVisibleNode)
-        print("Dump:", onlyVisibleNode)
         if onlyVisibleNode == nil then
             onlyVisibleNode = true
         end
@@ -90,14 +89,20 @@ local dispatcher = {
     end,
     Click = function(x, y)
         print("Click:", x, y)
+        local w, h = window.get_size()
+        poco_helper.click(x * w, y * h)
         return {}
     end,
     LongClick = function(x, y, duration)
         print("LongClick:", x, y, duration)
+        local w, h = window.get_size()
+        poco_helper.long_click(x * w, y * h, duration)
         return {}
     end,
     Swipe = function(x1, y1, x2, y2, duration)
         print("Swipe:", x1, y1, x2, y2, duration)
+        local w, h = window.get_size()
+        poco_helper.swipe(x1 * w, y1 * h, x2 * w, y2 * h, duration)
         return {}
     end,
 

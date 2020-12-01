@@ -19,6 +19,7 @@ poco = StdPoco(addr=DEFAULT_ADDRESS, device=device, use_airtest_input=False)
 ui = poco.agent.hierarchy.dump()
 print(json.dumps(ui, indent=4))
 
+screen_size = poco.get_screen_size()
 #print("poco.py:", "get_screen_size", poco.get_screen_size())
 
 # For UIObjectProxy documentation, see https://poco-chinese.readthedocs.io/en/latest/source/poco.proxy.html
@@ -38,6 +39,19 @@ for child in poco("main").children():
     print "  ", child.attr('name'), child.attr('type'), child.attr('text')
 
 poco("/go").poco("logo").click(sleep_interval=0.001)
+#poco("/go").poco("logo").long_click(duration=0.8)
+#poco("/go").poco("logo").drag_to((0.5, 0.5), duration=0.4)
+
+c = (140, 837)
+uc = (c[0] / float(screen_size['width']), c[1] / float(screen_size['height']))
+
+print screen_size
+print c
+print uc
+#
+poco.click(uc)
+
+#poco("main").poco("a").click(sleep_interval=0.001)
 
 # poco(node_name).drag_to((0.5, 0.5), duration=0.4)
 
