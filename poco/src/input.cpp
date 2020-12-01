@@ -1,5 +1,6 @@
 #include "input.h"
 #include <dmsdk/dlib/array.h>
+#include <dmsdk/dlib/math.h>
 #include <stdio.h>
 
 namespace dmPoco
@@ -32,7 +33,7 @@ static void DoTouch(dmHID::HTouchDevice device, int32_t x, int32_t y, bool press
 #else
 static void DoTouch(dmHID::HMouse mouse, int32_t x, int32_t y, bool pressed, bool released)
 {
-    printf("mouse: %d %d\n", x, y);
+    printf("mouse: %d %d  pressed: %d  released: %d\n", x, y, (int)pressed, (int)released);
     dmHID::SetMouseButton(mouse, dmHID::MOUSE_BUTTON_LEFT, true);
     dmHID::SetMousePosition(mouse, x, y);
 }
@@ -86,20 +87,19 @@ void UpdateInput(dmHID::HContext context, float dt)
     {
         InputEvent& ev = g_InputEvents[i];
 
-        bool pressed = ev.m_Elapsed == 0;
-        ev.m_Elapsed += dt;
-
-        float t = ev.m_Duration > 0 ? ev.m_Elapsed / ev.m_Duration : 0;
+        float t = ev.m_Duration > 0 ? ev.m_Elapsed / ev.m_Duration : 0.0f;
+        t = dmMath::Clamp(t, 0.0f, 1.0f);
         float x = ev.m_X1 + (ev.m_X2 - ev.m_X1) * t;
         float y = ev.m_Y1 + (ev.m_Y2 - ev.m_Y1) * t;
 
+        bool pressed = ev.m_Elapsed == 0;
         bool released = ev.m_Elapsed >= ev.m_Duration;
-        if (ev.m_Elapsed >= ev.m_Duration)
-            g_InputEvents.EraseSwap(i);
+        ev.m_Elapsed += dt;
 
         DoTouch(device, (int32_t)x, (int32_t)y, pressed, released);
 
-        printf("update: %d  duration: %f  elapsed: %f\n", i, ev.m_Duration, ev.m_Elapsed);
+        if (released)
+            g_InputEvents.EraseSwap(i);
     }
 }
 
