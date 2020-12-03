@@ -2,22 +2,7 @@ name: "main"
 scale_along_z: 0
 embedded_instances {
   id: "bg"
-  data: "components {\n"
-  "  id: \"main\"\n"
-  "  component: \"/main/main.script\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
-  "}\n"
-  "embedded_components {\n"
+  data: "embedded_components {\n"
   "  id: \"background\"\n"
   "  type: \"sprite\"\n"
   "  data: \"tile_set: \\\"/main/main.atlas\\\"\\n"
@@ -56,15 +41,12 @@ embedded_instances {
   }
 }
 embedded_instances {
-  id: "go"
-  children: "go_child"
+  id: "levels"
   data: "embedded_components {\n"
-  "  id: \"logo\"\n"
-  "  type: \"sprite\"\n"
-  "  data: \"tile_set: \\\"/main/main.atlas\\\"\\n"
-  "default_animation: \\\"icon_180\\\"\\n"
-  "material: \\\"/builtins/materials/sprite.material\\\"\\n"
-  "blend_mode: BLEND_MODE_ALPHA\\n"
+  "  id: \"level1\"\n"
+  "  type: \"collectionproxy\"\n"
+  "  data: \"collection: \\\"/main/level1.collection\\\"\\n"
+  "exclude: false\\n"
   "\"\n"
   "  position {\n"
   "    x: 0.0\n"
@@ -78,29 +60,30 @@ embedded_instances {
   "    w: 1.0\n"
   "  }\n"
   "}\n"
-  ""
-  position {
-    x: 61.0
-    y: 62.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale3 {
-    x: 0.298
-    y: 0.309
-    z: 1.0
-  }
-}
-embedded_instances {
-  id: "gui"
-  data: "components {\n"
-  "  id: \"main\"\n"
-  "  component: \"/main/main.gui\"\n"
+  "embedded_components {\n"
+  "  id: \"test\"\n"
+  "  type: \"collectionproxy\"\n"
+  "  data: \"collection: \\\"/main/test.collection\\\"\\n"
+  "exclude: false\\n"
+  "\"\n"
+  "  position {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "  }\n"
+  "  rotation {\n"
+  "    x: 0.0\n"
+  "    y: 0.0\n"
+  "    z: 0.0\n"
+  "    w: 1.0\n"
+  "  }\n"
+  "}\n"
+  "embedded_components {\n"
+  "  id: \"menu\"\n"
+  "  type: \"collectionproxy\"\n"
+  "  data: \"collection: \\\"/main/menu.collection\\\"\\n"
+  "exclude: false\\n"
+  "\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"
@@ -132,53 +115,10 @@ embedded_instances {
   }
 }
 embedded_instances {
-  id: "go_child"
-  data: "embedded_components {\n"
-  "  id: \"logo\"\n"
-  "  type: \"sprite\"\n"
-  "  data: \"tile_set: \\\"/main/main.atlas\\\"\\n"
-  "default_animation: \\\"icon_180\\\"\\n"
-  "material: \\\"/builtins/materials/sprite.material\\\"\\n"
-  "blend_mode: BLEND_MODE_ALPHA\\n"
-  "\"\n"
-  "  position {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "  }\n"
-  "  rotation {\n"
-  "    x: 0.0\n"
-  "    y: 0.0\n"
-  "    z: 0.0\n"
-  "    w: 1.0\n"
-  "  }\n"
-  "}\n"
-  ""
-  position {
-    x: 124.161
-    y: 0.0
-    z: 0.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale3 {
-    x: 0.5
-    y: 0.5
-    z: 0.5
-  }
-}
-embedded_instances {
-  id: "levels"
-  data: "embedded_components {\n"
-  "  id: \"level1\"\n"
-  "  type: \"collectionproxy\"\n"
-  "  data: \"collection: \\\"/main/level1.collection\\\"\\n"
-  "exclude: false\\n"
-  "\"\n"
+  id: "controller"
+  data: "components {\n"
+  "  id: \"script\"\n"
+  "  component: \"/main/main.script\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"

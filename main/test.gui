@@ -1,11 +1,15 @@
-script: "/main/main.gui_script"
+script: "/main/test.gui_script"
 fonts {
-  name: "system_font"
-  font: "/builtins/fonts/system_font.font"
+  name: "larryfont"
+  font: "/dirtylarry/larryfont.font"
 }
 textures {
   name: "main"
   texture: "/main/main.atlas"
+}
+textures {
+  name: "animals"
+  texture: "/assets/animals/animals.atlas"
 }
 background_color {
   x: 0.0
@@ -15,8 +19,8 @@ background_color {
 }
 nodes {
   position {
-    x: 315.0
-    y: 709.0
+    x: 144.0
+    y: 886.0
     z: 0.0
     w: 1.0
   }
@@ -57,7 +61,7 @@ nodes {
   outerBounds: PIEBOUNDS_ELLIPSE
   innerRadius: 0.0
   perimeterVertices: 10
-  pieFillAngle: 360.0
+  pieFillAngle: 270.0
   clipping_mode: CLIPPING_MODE_NONE
   clipping_visible: true
   clipping_inverted: false
@@ -67,8 +71,8 @@ nodes {
 }
 nodes {
   position {
-    x: -176.0
-    y: 128.0
+    x: 0.0
+    y: -148.0
     z: 0.0
     w: 1.0
   }
@@ -122,8 +126,8 @@ nodes {
 }
 nodes {
   position {
-    x: -176.0
-    y: 0.0
+    x: 0.0
+    y: -276.0
     z: 0.0
     w: 1.0
   }
@@ -177,8 +181,8 @@ nodes {
 }
 nodes {
   position {
-    x: 315.0
-    y: 600.0
+    x: 500.0
+    y: 886.0
     z: 0.0
     w: 1.0
   }
@@ -219,7 +223,7 @@ nodes {
   outerBounds: PIEBOUNDS_ELLIPSE
   innerRadius: 0.0
   perimeterVertices: 10
-  pieFillAngle: 360.0
+  pieFillAngle: 220.0
   clipping_mode: CLIPPING_MODE_NONE
   clipping_visible: true
   clipping_inverted: false
@@ -229,8 +233,8 @@ nodes {
 }
 nodes {
   position {
-    x: 171.0
-    y: -40.0
+    x: 0.0
+    y: -148.0
     z: 0.0
     w: 1.0
   }
@@ -284,8 +288,8 @@ nodes {
 }
 nodes {
   position {
-    x: 171.0
-    y: -168.0
+    x: 0.0
+    y: -276.0
     z: 0.0
     w: 1.0
   }
@@ -340,7 +344,7 @@ nodes {
 nodes {
   position {
     x: 322.0
-    y: 412.0
+    y: 871.0
     z: 0.0
     w: 1.0
   }
@@ -371,7 +375,7 @@ nodes {
   type: TYPE_TEXT
   blend_mode: BLEND_MODE_ALPHA
   text: "Hello World!"
-  font: "system_font"
+  font: "larryfont"
   id: "text"
   xanchor: XANCHOR_NONE
   yanchor: YANCHOR_NONE

@@ -1,7 +1,6 @@
 local poco = require('poco.lua.defold-poco')
 
 function init(self)
-    --msg.post(".", "acquire_input_focus")
     msg.post("@render:", "use_fixed_fit_projection", { near = -1, far = 1 })
 
     poco:init_server(15004)
@@ -16,7 +15,10 @@ function init(self)
             return scene
         end)
 
-    msg.post("levels#level1", "async_load")
+    msg.post("levels", "acquire_input_focus")
+
+    self.current = "menu"
+    msg.post("levels#menu", "async_load")
 end
 
 function update(self, dt)
@@ -30,5 +32,12 @@ function on_message(self, message_id, message, sender)
     if message_id == hash("proxy_loaded") then
         msg.post(sender, "init")
         msg.post(sender, "enable")
+
+    elseif message_id == hash("load_level") then
+        msg.post(msg.url(nil, "/levels", self.current), "disable")
+        msg.post(msg.url(nil, "/levels", self.current), "unload")
+
+        self.current = message.name
+        msg.post(msg.url(nil, "/levels", message.name), "async_load")
     end
 end
