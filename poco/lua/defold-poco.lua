@@ -21,7 +21,8 @@ local dispatcher = {
         end
 
         if poco_helper ~=nil then
-            return poco_helper.dump(onlyVisibleNode)
+            local w, h = window.get_size()
+            return poco_helper.dump(onlyVisibleNode, w, h)
         else
             return "No poco_helper extension found!"
         end

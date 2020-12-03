@@ -1,5 +1,6 @@
 #include <dmsdk/sdk.h>
 #include <dmsdk/dlib/json.h>
+#include <dmsdk/dlib/math.h>
 #include <dmsdk/dlib/webserver.h>
 #include <dmsdk/hid/hid.h>
 #include "json.h"
@@ -236,8 +237,11 @@ static int Poco_Dump(lua_State* L)
     else
         return DM_LUA_ERROR("Expected boolean for argument 1");
 
+    lua_Number screen_width = luaL_checknumber(L, 2);
+    lua_Number screen_height = luaL_checknumber(L, 3);
+
     // Creates a table
-    dmPoco::DumpToLuaTable(g_Poco.m_Register, L);
+    dmPoco::DumpToLuaTable(g_Poco.m_Register, screen_width, screen_height, L);
 
     return 1;
 }

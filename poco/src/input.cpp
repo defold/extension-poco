@@ -33,8 +33,7 @@ static void DoTouch(dmHID::HTouchDevice device, int32_t x, int32_t y, bool press
 #else
 static void DoTouch(dmHID::HMouse mouse, int32_t x, int32_t y, bool pressed, bool released)
 {
-    printf("mouse: %d %d  pressed: %d  released: %d\n", x, y, (int)pressed, (int)released);
-    dmHID::SetMouseButton(mouse, dmHID::MOUSE_BUTTON_LEFT, true);
+    dmHID::SetMouseButton(mouse, dmHID::MOUSE_BUTTON_LEFT, released?false:true);
     dmHID::SetMousePosition(mouse, x, y);
 }
 #endif
@@ -58,25 +57,21 @@ static void AddInput(int32_t x1, int32_t y1, int32_t x2, int32_t y2, float durat
 
 void Click(int32_t x, int32_t y)
 {
-    printf("Click %d %d\n", x, y);
     AddInput(x, y, x, y, 0);
 }
 
 void LongClick(int32_t x, int32_t y, float duration)
 {
-    printf("Long Click %d %d  %f\n", x, y, duration);
     AddInput(x, y, x, y, duration);
 }
 
 void Swipe(int32_t x1, int32_t y1, int32_t x2, int32_t y2, float duration)
 {
-    printf("Swipe %d %d -> %d %d  %f\n", x1, y1, x2, y2, duration);
     AddInput(x1, y1, x2, y2, duration);
 }
 
 void UpdateInput(dmHID::HContext context, float dt)
 {
-
 #if defined(DM_PLATFORM_IOS) || defined(DM_PLATFORM_ANDROID) || defined(DM_PLATFORM_SWITCH)
     dmHID::HTouchDevice device = dmHID::GetTouchDevice(context, 0);
 #else
@@ -95,6 +90,12 @@ void UpdateInput(dmHID::HContext context, float dt)
         bool pressed = ev.m_Elapsed == 0;
         bool released = ev.m_Elapsed >= ev.m_Duration;
         ev.m_Elapsed += dt;
+
+        // Since the action.released will be called automatically, it will also use the current mouse cursor
+        // which may not be where we expect it to be
+        // So we split it up into two frames
+        if (pressed && released)
+            released = false;
 
         DoTouch(device, (int32_t)x, (int32_t)y, pressed, released);
 

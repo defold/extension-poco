@@ -3,17 +3,17 @@
 
 namespace dmPoco
 {
-    static void OutputProperty(lua_State* L, dmGameObject::SceneNodeProperty* property)
+    static void OutputProperty(lua_State* L, int32_t screen_width, int32_t screen_height, dmGameObject::SceneNodeProperty* property)
     {
         static dmhash_t hash_id = dmHashString64("id");
         static dmhash_t hash_name = dmHashString64("name");
-        static dmhash_t hash_name_position = dmHashString64("position");
-        static dmhash_t hash_name_pos = dmHashString64("pos");
+        static dmhash_t hash_position = dmHashString64("world_position");
+        static dmhash_t hash_pos = dmHashString64("pos");
 
         dmhash_t name = property->m_NameHash;
-        if (name == hash_name_position) // the poco api needs it to be called "pos"
+        if (name == hash_position) // the poco api needs it to be called "pos"
         {
-            name = hash_name_pos;
+            name = hash_pos;
         } else if (name == hash_id)
         {
             name = hash_name;
@@ -37,10 +37,21 @@ namespace dmPoco
             {
                 lua_newtable(L);
                 int vsize = property->m_Type == dmGameObject::SCENE_NODE_PROPERTY_TYPE_VECTOR3 ? 3 : 4;
-                for (int v = 0; v < vsize; ++v)
+
+                float v[4] = { property->m_Value.m_V4[0], property->m_Value.m_V4[1], property->m_Value.m_V4[2], property->m_Value.m_V4[3]};
+
+                // Convert from engine: [(0,0), (screen_width, screen_height)] (origin is bottom left) to
+                // Poco: [(0,0), (1,1)] (origin is top left)
+                if (name == hash_pos)
                 {
-                    lua_pushnumber(L, property->m_Value.m_V4[v]);
-                    lua_rawseti (L, -2, v+1);
+                    v[0] /= (float)screen_width;
+                    v[1] = (screen_height - v[1]) / (float)screen_height;
+                }
+
+                for (int i = 0; i < vsize; ++i)
+                {
+                    lua_pushnumber(L, v[i]);
+                    lua_rawseti (L, -2, i+1);
                 }
             }
             break;
@@ -62,10 +73,10 @@ namespace dmPoco
         return true;
     }
 
-    static void SceneGraphToLua(lua_State* L, dmGameObject::SceneNode* node)
+    static void SceneGraphToLua(lua_State* L, int32_t screen_width, int32_t screen_height, dmGameObject::SceneNode* node)
     {
         static dmhash_t hash_id = dmHashString64("id");
-        static dmhash_t hash_name_position = dmHashString64("position");
+        static dmhash_t hash_position = dmHashString64("world_position");
         dmhash_t name = 0;
 
         lua_pushstring(L, "payload");
@@ -84,11 +95,11 @@ namespace dmPoco
             dmGameObject::SceneNodePropertyIterator pit = TraverseIterateProperties(node);
             while(dmGameObject::TraverseIteratePropertiesNext(&pit))
             {
-                OutputProperty(L, &pit.m_Property);
+                OutputProperty(L, screen_width, screen_height, &pit.m_Property);
 
                 if (pit.m_Property.m_NameHash == hash_id)
                     name = pit.m_Property.m_Value.m_Hash;
-                else if (pit.m_Property.m_NameHash == hash_name_position)
+                else if (pit.m_Property.m_NameHash == hash_position)
                     has_position = true;
             }
 
@@ -116,7 +127,7 @@ namespace dmPoco
                 lua_pushinteger(L, 1+counter++);
                 lua_newtable(L);
 
-                    SceneGraphToLua(L, &it.m_Node);
+                    SceneGraphToLua(L, screen_width, screen_height, &it.m_Node);
 
                 lua_settable(L, -3);
             }
@@ -129,7 +140,7 @@ namespace dmPoco
 
     // Follow the structure from
     // https://poco-chinese.readthedocs.io/en/latest/source/poco.sdk.AbstractDumper.html?highlight=abstractdumper#poco.sdk.AbstractDumper.IDumper.dumpHierarchy
-    void DumpToLuaTable(dmGameObject::HRegister regist, lua_State* L)
+    void DumpToLuaTable(dmGameObject::HRegister regist, int32_t screen_width, int32_t screen_height, lua_State* L)
     {
         DM_LUA_STACK_CHECK(L, 1);
 
@@ -141,6 +152,6 @@ namespace dmPoco
         }
 
         lua_newtable(L);
-        SceneGraphToLua(L, &root);
+        SceneGraphToLua(L, screen_width, screen_height, &root);
     }
 }

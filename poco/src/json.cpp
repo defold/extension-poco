@@ -1,6 +1,7 @@
 #include "json.h"
-#include <dmsdk/dlib/log.h>
 #include <dmsdk/dlib/dstrings.h>
+#include <dmsdk/dlib/log.h>
+#include <dmsdk/dlib/math.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <memory.h>

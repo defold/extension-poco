@@ -10,5 +10,5 @@ namespace dmGameObject
 
 namespace dmPoco
 {
-    void DumpToLuaTable(dmGameObject::HRegister regist, lua_State* L);
+    void DumpToLuaTable(dmGameObject::HRegister regist, int32_t screen_width, int32_t screen_height, lua_State* L);
 }

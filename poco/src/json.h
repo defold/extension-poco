@@ -1,16 +1,6 @@
 #include <dmsdk/dlib/json.h>
 #include <stdint.h>
 
-// Until it's part of the dmSDK
-namespace dmMath
-{
-    template <class T>
-    const T Min(const T a, const T b)
-    {
-        return (a < b) ? a : b;
-    }
-}
-
 namespace dmJson
 {
     const dmJson::Node* GetRootNode(const dmJson::Document* doc);
