@@ -6,6 +6,8 @@
 
 This extension implements the [Poco](https://poco-chinese.readthedocs.io/en/latest/#) api, using the [Cocos2Dx-lua](https://poco-chinese.readthedocs.io/en/latest/source/doc/integration.html?highlight=cocos2d#cocos2dx-lua) Lua server, with some small cusomization on top (see `defold-poco.lua`)
 
+![](./examples/example.gif)
+
 ## Installation
 
 ### Defold
