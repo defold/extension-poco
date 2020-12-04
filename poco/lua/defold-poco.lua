@@ -23,85 +23,20 @@ local dispatcher = {
         if poco_helper ~=nil then
             local w, h = window.get_size()
             return poco_helper.dump(onlyVisibleNode, w, h)
-        else
-            return "No poco_helper extension found!"
         end
-
-        --return Dumper:dumpHierarchy(onlyVisibleNode)
-        local result = {}
-        result['name'] = 'OctopusArea'
-        result['payload'] = {}
-        result['payload']['name'] = 'OctopusArea'
-        result['payload']['type'] = 'GameObject'
-        result['payload']['visible'] = true
-        result['payload']['clickable'] = true
-        --result['payload']['zOrders'] = {}
-        --result['payload']['zOrders']['global'] = 0
-        --result['payload']['zOrders']['local'] = -10
-        --result['payload']['scale'] = {1, 1}
-        --result['payload']['anchorPoint'] = {0.5, 0.5}
-        result['payload']['pos'] = {0.130729169, 0.44907406}
-        --result['payload']['size'] = {0.0859375, 0.125}
-
-        --result['payload']['children'] = {}
-        result['children'] = {}
-
-
-        local child = {}
-        child['name'] = 'child1'
-        child['payload'] = {}
-        child['payload']['name'] = 'child1'
-        child['payload']['type'] = 'GameObject'
-        child['payload']['visible'] = true
-        child['payload']['clickable'] = true
-        --child['payload']['zOrders'] = {}
-        --child['payload']['zOrders']['global'] = 0
-        --child['payload']['zOrders']['local'] = -10
-        --child['payload']['scale'] = {1, 1}
-        --child['payload']['anchorPoint'] = {0.5, 0.5}
-        child['payload']['pos'] = {0.130729169, 0.44907406}
-        --child['payload']['size'] = {0.0859375, 0.125}
-
-        --table.insert(result['payload']['children'], child)
-        --result['payload']['children'][child['name']] = child
-        --result['children'][child['name']] = child
-        child['children'] = {}
-
-        table.insert(result['children'], child)
-
-
-        local child2 = {}
-        child2['name'] = 'child21'
-        child2['payload'] = {}
-        child2['payload']['name'] = 'child2'
-        child2['payload']['type'] = 'GameObject'
-        child2['payload']['visible'] = true
-        child2['payload']['clickable'] = true
-        child2['payload']['pos'] = {0.130729169, 0.44907406}
-        --child2['payload']['size'] = {0.0859375, 0.125}
-
-        --table.insert(result['payload']['child2ren'], child2)
-        --result['payload']['child2ren'][child2['name']] = child2
-        child2['children'] = {}
-
-        table.insert(child['children'], child2)
-
-        return result
+        return "No poco_helper extension found!"
     end,
     Click = function(x, y)
-        print("Click:", x, y)
         local w, h = window.get_size()
         poco_helper.click(x * w, y * h)
         return {}
     end,
     LongClick = function(x, y, duration)
-        print("LongClick:", x, y, duration)
         local w, h = window.get_size()
         poco_helper.long_click(x * w, y * h, duration)
         return {}
     end,
     Swipe = function(x1, y1, x2, y2, duration)
-        print("Swipe:", x1, y1, x2, y2, duration)
         local w, h = window.get_size()
         poco_helper.swipe(x1 * w, y1 * h, x2 * w, y2 * h, duration)
         return {}
@@ -130,8 +65,6 @@ local dispatcher = {
         end
         return ""
     end,
-
-    -- TODO: Add hooks to call functions and send events
 }
 
 local callbacks = {

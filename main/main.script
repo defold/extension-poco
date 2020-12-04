@@ -7,7 +7,7 @@ function init(self)
 
     poco:setDispatchFn("TestNewFunction", function(x, y, z)
             print("INSIDE NEW CLIENT TEST FUNCTION!", x, y, z)
-            return {message= "someresult"}
+            return {message= "" .. (x + y + z)}
         end)
 
     poco:setDispatchCallbackFn("Dump", function(scene)
