@@ -3,6 +3,9 @@
 #include <dmsdk/dlib/math.h>
 #include <stdio.h>
 
+
+#include <dmsdk/dlib/log.h>
+
 namespace dmPoco
 {
 
@@ -19,25 +22,27 @@ struct InputEvent
 dmArray<InputEvent> g_InputEvents;
 
 
-#if defined(DM_PLATFORM_IOS) || defined(DM_PLATFORM_ANDROID) || defined(DM_PLATFORM_SWITCH)
-static void DoTouch(dmHID::HTouchDevice device, int32_t x, int32_t y, bool pressed, bool released)
+static void DoTouch(dmHID::HMouse mouse, dmHID::HTouchDevice device, int32_t x, int32_t y, bool pressed, bool released)
 {
-    uint32_t touch_id = 0;
-    dmHID::Phase phase = dmHID::PHASE_MOVED;
-    if (pressed)
-        phase = dmHID::PHASE_BEGAN;
-    if (released)
-        phase = dmHID::PHASE_ENDED;
-    dmHID::AddTouch(device, x, y, touch_id, phase);
-}
-#else
-static void DoTouch(dmHID::HMouse mouse, int32_t x, int32_t y, bool pressed, bool released)
-{
-    dmHID::SetMouseButton(mouse, dmHID::MOUSE_BUTTON_LEFT, released?false:true);
-    dmHID::SetMousePosition(mouse, x, y);
-}
-#endif
+    if (dmHID::INVALID_TOUCH_DEVICE_HANDLE != device)
+    {
+        uint32_t touch_id = 0;
+        dmHID::Phase phase = dmHID::PHASE_MOVED;
+        if (pressed)
+            phase = dmHID::PHASE_BEGAN;
+        if (released)
+            phase = dmHID::PHASE_ENDED;
+        dmHID::AddTouch(device, x, y, touch_id, phase);
+    }
 
+    // We also have a "fast path" for the "touch" action, which is implemented via the mouse button 1
+    // See g_MouseEmulationTouch in android_init.c in Defold source
+    if (dmHID::INVALID_MOUSE_HANDLE != mouse)
+    {
+        dmHID::SetMouseButton(mouse, dmHID::MOUSE_BUTTON_LEFT, released?false:true);
+        dmHID::SetMousePosition(mouse, x, y);
+    }
+}
 
 static void AddInput(int32_t x1, int32_t y1, int32_t x2, int32_t y2, float duration)
 {
@@ -72,10 +77,10 @@ void Swipe(int32_t x1, int32_t y1, int32_t x2, int32_t y2, float duration)
 
 void UpdateInput(dmHID::HContext context, float dt)
 {
+    dmHID::HMouse mouse = dmHID::GetMouse(context, 0);
+    dmHID::HTouchDevice device = dmHID::INVALID_TOUCH_DEVICE_HANDLE;
 #if defined(DM_PLATFORM_IOS) || defined(DM_PLATFORM_ANDROID) || defined(DM_PLATFORM_SWITCH)
-    dmHID::HTouchDevice device = dmHID::GetTouchDevice(context, 0);
-#else
-    dmHID::HMouse device = dmHID::GetMouse(context, 0);
+    device = dmHID::GetTouchDevice(context, 0);
 #endif
 
     for (uint32_t i = 0; i < g_InputEvents.Size(); ++i)
@@ -97,7 +102,7 @@ void UpdateInput(dmHID::HContext context, float dt)
         if (pressed && released)
             released = false;
 
-        DoTouch(device, (int32_t)x, (int32_t)y, pressed, released);
+        DoTouch(mouse, device, (int32_t)x, (int32_t)y, pressed, released);
 
         if (released)
             g_InputEvents.EraseSwap(i);

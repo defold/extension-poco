@@ -7,6 +7,8 @@
 #include "dump.h"
 #include "input.h"
 
+#include <stdlib.h> // realloc
+
 #define MODULE_NAME Poco
 #define LIB_NAME "poco_helper"
 #define HTTP_PATH "/poco"
