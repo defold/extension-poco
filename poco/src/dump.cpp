@@ -9,6 +9,7 @@ namespace dmPoco
         static dmhash_t hash_name = dmHashString64("name");
         static dmhash_t hash_position = dmHashString64("world_position");
         static dmhash_t hash_pos = dmHashString64("pos");
+        static dmhash_t hash_size = dmHashString64("size");
 
         dmhash_t name = property->m_NameHash;
         if (name == hash_position) // the poco api needs it to be called "pos"
@@ -46,6 +47,17 @@ namespace dmPoco
                 {
                     v[0] /= (float)screen_width;
                     v[1] = (screen_height - v[1]) / (float)screen_height;
+                    // Certain operations like "pinch" unpacks all values,
+                    // and then we cannot return a list with more than 2 elements
+                    vsize = 2;
+                }
+                else if (name == hash_size)
+                {
+                    v[0] /= (float)screen_width;
+                    v[1] /= (float)screen_height;
+                    // Certain operations like "pinch" unpacks all values,
+                    // and then we cannot return a list with more than 2 elements
+                    vsize = 2;
                 }
 
                 for (int i = 0; i < vsize; ++i)
