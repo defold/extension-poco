@@ -16,9 +16,6 @@ poco = StdPoco(addr=(options.address, options.port), device=device, use_airtest_
 
 # ************************************************************************************************
 
-#ui = poco.agent.hierarchy.dump()
-#print(json.dumps(ui, indent=4))
-
 # For UIObjectProxy documentation, see https://poco-chinese.readthedocs.io/en/latest/source/poco.proxy.html
 
 # load level 1
