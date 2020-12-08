@@ -34,10 +34,12 @@ function on_message(self, message_id, message, sender)
         msg.post(sender, "enable")
 
     elseif message_id == hash("load_level") then
-        msg.post(msg.url(nil, "/levels", self.current), "disable")
-        msg.post(msg.url(nil, "/levels", self.current), "unload")
+        local url = msg.url(nil, "/levels", self.current)
+        msg.post(url, "disable")
+        msg.post(url, "unload")
 
         self.current = message.name
+
         msg.post(msg.url(nil, "/levels", message.name), "async_load")
     end
 end

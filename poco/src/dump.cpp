@@ -103,6 +103,16 @@ namespace dmPoco
             lua_pushboolean(L, clickable);
             lua_setfield(L, -2, "clickable");
 
+            lua_pushstring(L, "anchorPoint");  // add a default anchorPoint value
+            lua_newtable(L);
+                for (int v = 0; v < 2; ++v)
+                {
+                    lua_pushnumber(L, 0);
+                    lua_rawseti (L, -2, v+1);
+                }
+            lua_settable(L, -3);
+
+
             bool has_position = false;
             dmGameObject::SceneNodePropertyIterator pit = TraverseIterateProperties(node);
             while(dmGameObject::TraverseIteratePropertiesNext(&pit))

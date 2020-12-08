@@ -12,6 +12,12 @@ PocoManager.server_sock = nil
 PocoManager.all_socks = {}
 PocoManager.clients = {}
 
+-- from unit space to screen space
+local function unit_to_screen(x, y)
+    local w, h = window.get_size()
+    return x * w, y * h
+end
+
 -- rpc methods registration
 local dispatcher = {
     GetSDKVersion = function() return VERSION end,
@@ -27,17 +33,29 @@ local dispatcher = {
         return "No poco_helper extension found!"
     end,
     Click = function(x, y)
-        local w, h = window.get_size()
-        poco_helper.click(x * w, y * h)
+        x, y = unit_to_screen(x, y)
+        poco_helper.click(x, y)
         return {}
     end,
     LongClick = function(x, y, duration)
-        local w, h = window.get_size()
-        poco_helper.long_click(x * w, y * h, duration)
+        x, y = unit_to_screen(x, y)
+        poco_helper.long_click(x, y, duration)
         return {}
     end,
+    -- RClick = function(x, y)
+    --     local w, h = window.get_size()
+    --     poco_helper.right_click(x * w, y * h)
+    --     return {}
+    -- end,
+    -- DoubleClick = function(x, y)
+    --     local w, h = window.get_size()
+    --     poco_helper.double_click(x * w, y * h)
+    --     return {}
+    -- end,
+
     Swipe = function(x1, y1, x2, y2, duration)
-        local w, h = window.get_size()
+        x1, y1 = unit_to_screen(x1, y1)
+        x2, y2 = unit_to_screen(x2, y2)
         poco_helper.swipe(x1 * w, y1 * h, x2 * w, y2 * h, duration)
         return {}
     end,
@@ -50,13 +68,20 @@ local dispatcher = {
         local w, h = window.get_size()
         return {width = w, height = h}
     end,
+    -- NOTE: We currently have no good way of returning a unique ID from Defold to Poco that
+    -- contains the URL but also the sub component (for gui nodes)
     -- SetText = function(_instanceId, val)
+    --     print("SetText", _instanceId, val)
     --     local node = Dumper:getCachedNode(_instanceId)
     --     if node ~= nil then
     --         return node:setAttr('text', val)
     --     end
     --     return false
     -- end,
+    KeyEvent = function(val)
+        poco_helper.keyevent(val)
+        return true
+    end,
     Execute = function(msg)
         local f = loadstring(msg)
         local res = f()

@@ -45,16 +45,26 @@ static int Poco_Dump(lua_State* L)
     return 1;
 }
 
-static int Poco_Click(lua_State* L)
+static int Click(lua_State* L, dmHID::MouseButton button)
 {
     DM_LUA_STACK_CHECK(L, 0);
 
     lua_Number x = luaL_checknumber(L, 1);
     lua_Number y = luaL_checknumber(L, 2);
 
-    dmPoco::Click((int32_t)x, (int32_t)y);
+    dmPoco::Click(button, (int32_t)x, (int32_t)y);
 
     return 0;
+}
+
+static int Poco_Click(lua_State* L)
+{
+    return Click(L, dmHID::MOUSE_BUTTON_LEFT);
+}
+
+static int Poco_RightClick(lua_State* L)
+{
+    return Click(L, dmHID::MOUSE_BUTTON_RIGHT);
 }
 
 static int Poco_LongClick(lua_State* L)
@@ -89,13 +99,26 @@ static int Poco_Swipe(lua_State* L)
     return 0;
 }
 
+static int Poco_KeyEvent(lua_State* L)
+{
+    DM_LUA_STACK_CHECK(L, 0);
+
+    const char* str = luaL_checkstring(L, 1);
+
+    dmPoco::KeyEvent(str);
+
+    return 0;
+}
+
 // Functions exposed to Lua
 static const luaL_reg Poco_module_methods[] =
 {
     {"dump", Poco_Dump},
     {"click", Poco_Click},
+    {"right_click", Poco_RightClick},
     {"long_click", Poco_LongClick},
     {"swipe", Poco_Swipe},
+    {"keyevent", Poco_KeyEvent},
     {0, 0}
 };
 
@@ -115,6 +138,8 @@ static dmExtension::Result AppInitialize(dmExtension::AppParams* params)
     g_Poco.m_HidContext = dmEngine::GetHIDContext(params);
     g_Poco.m_LastTime = dmTime::GetTime();
     g_Poco.m_Initialized = true;
+
+    dmPoco::InitInput();
 
     return dmExtension::RESULT_OK;
 }
