@@ -78,14 +78,51 @@ You can also add a hook to an existing function, in order to manipulate the resu
     end)
 
 
-## Usage - Client side (i.e. the test script)
+## Usage - Client side (i.e. the Python test script)
+
+### Setup
+
+If you're using a predefined ipaddress, you can use a `VirtualDevice`:
+
+    device = VirtualDevice(ipaddress)
+
+You create a `StdPoco` instance using an `ip address` and a `port`:
+
+    poco = StdPoco(addr=(ipaddress, port), device=device, use_airtest_input=False)
+
+If you are using Android, you don't know the ipaddress of the device, you can use a `device = None` and ipaddress 0 `0.0.0.0`.
+
+The default port for the poco server in the extension is `15004`
+
+See the [examples](https://github.com/defold/extension-poco/tree/master/examples) for practical examples of how to create a Poco instance.
+
+
+### Dump the scene graph
+
+You can get the full scene graph:
+
+    ui = poco.agent.hierarchy.dump()
+
+### Click on an object
+
+To click on an object named `button_node`:
+
+    poco("button_node").click()
+
+### Send key text combination
+
+Special keys are of the format `{KEY_name}`.
+Other characters are treated as text. (NOTE: Currently no unicode support)
+
+    poco.agent.input.keyevent('test@mail.coo{KEY_BACKSPACE}m')
+
 
 ### Examples
-[Examples](https://github.com/defold/extension-poco/tree/master/python)
+[Examples](https://github.com/defold/extension-poco/tree/master/examples)
 
 This extension also contains a test project, which we can test against.
 
-Launch the test project on your device and then run one of the [test scripts](https://github.com/defold/extension-poco/tree/master/python).
+Launch the test project on your device and then run one of the [test scripts](https://github.com/defold/extension-poco/tree/master/examples).
 
 How to test against a local build on the host computer:
 
@@ -102,6 +139,8 @@ Connect to an Android device via `adb` (if you don't know its ipaddress)
 For list of all arguments:
 
     $ python2 ./examples/example_dump.py -h
+
+
 
 ### Poco Documentation
 

@@ -29,51 +29,10 @@ time.sleep(1)
 poco("scroll_view").swipe([0.4, 0.0], duration=0.5)
 time.sleep(1)
 
-"""
-# INPUT TEST
-poco("input_email/bg").click()
-
-poco.agent.input.keyevent('test@mail.coo{KEY_BACKSPACE}m')
-
-poco("bn_login/larrybutton").click()
-
-login_status = poco("login_status").get_text()
-
-print("login_status:", login_status)
-"""
-
-
-"""
-# SLIDER TEST
-
-poco("slider/larryslider").click(focus=[0.0,0.0])
-slider_value = poco("slider/larryvalue").get_text()
-print("slider value:", slider_value)
-
-poco("slider/larryslider").click(focus=[2.0,0.0])
-slider_value = poco("slider/larryvalue").get_text()
-print("slider value:", slider_value)
-
-# RADIO TEST
-radio_value = poco("radio_value").get_text()
-print("radio value:", radio_value)
-
-poco("radio_1/larryradio").click()
-radio_value = poco("radio_value").get_text()
-print("radio value:", radio_value)
-
-# CHECKBOX TEST
-checkbox_value = poco("checkbox_value").get_text()
-print("checkbox value:", checkbox_value)
-
-poco("checkbox/larrycheckbox").click()
-checkbox_value = poco("checkbox_value").get_text()
-print("checkbox value:", checkbox_value)
-"""
 
 # EXIT
 print("Sleeping before exiting")
-time.sleep(2)
+time.sleep(1)
 poco("bn_back/larrybutton").click()
 
 print("Done")

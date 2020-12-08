@@ -59,10 +59,10 @@ local dispatcher = {
         poco_helper.swipe(x1, y1, x2, y2, duration)
         return {}
     end,
-
+    -- NOTE: Instead of having this extension depend on another screenshot extension
+    -- we recommend users to do that themselves, and implement this function
     -- Screenshot = function(width)
-    --     width = width or 720
-    --     return Screen:getScreen(width)
+    --     return ...
     -- end,
     GetScreenSize = function()
         local w, h = window.get_size()
