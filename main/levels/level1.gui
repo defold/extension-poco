@@ -1,4 +1,4 @@
-script: "/main/level.gui_script"
+script: "/main/levels/level.gui_script"
 fonts {
   name: "larryfont"
   font: "/dirtylarry/larryfont.font"

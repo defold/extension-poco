@@ -1,6 +1,6 @@
 [project]
 title = extension-poco
-dependencies = https://github.com/andsve/dirtylarry/archive/master.zip
+dependencies = https://github.com/andsve/dirtylarry/archive/master.zip,https://github.com/Insality/druid/archive/master.zip
 
 [bootstrap]
 main_collection = /main/main.collectionc

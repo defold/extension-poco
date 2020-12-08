@@ -1,4 +1,4 @@
-script: "/main/dirtylarry.gui_script"
+script: "/main/levels/dirtylarry.gui_script"
 fonts {
   name: "larryfont"
   font: "/dirtylarry/larryfont.font"

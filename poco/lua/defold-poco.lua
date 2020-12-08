@@ -56,7 +56,7 @@ local dispatcher = {
     Swipe = function(x1, y1, x2, y2, duration)
         x1, y1 = unit_to_screen(x1, y1)
         x2, y2 = unit_to_screen(x2, y2)
-        poco_helper.swipe(x1 * w, y1 * h, x2 * w, y2 * h, duration)
+        poco_helper.swipe(x1, y1, x2, y2, duration)
         return {}
     end,
 
