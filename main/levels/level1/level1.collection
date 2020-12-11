@@ -98,7 +98,7 @@ embedded_instances {
   id: "gui"
   data: "components {\n"
   "  id: \"level1\"\n"
-  "  component: \"/main/levels/level1.gui\"\n"
+  "  component: \"/main/levels/level1/level1.gui\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"

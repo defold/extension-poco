@@ -18,19 +18,23 @@ local function unit_to_screen(x, y)
     return x * w, y * h
 end
 
+PocoManager.view_proj     = vmath.matrix4()
+PocoManager.gui_view_proj = vmath.matrix4()
+
 -- rpc methods registration
 local dispatcher = {
     GetSDKVersion = function() return VERSION end,
     Dump = function(onlyVisibleNode)
+        --[[
+        NOTE: onlyVisibleNode is not supported yet
+        We could potentially support it by culling the items outside of the screen boundaries
         if onlyVisibleNode == nil then
             onlyVisibleNode = true
         end
+        --]]
 
-        if poco_helper ~=nil then
-            local w, h = window.get_size()
-            return poco_helper.dump(onlyVisibleNode, w, h)
-        end
-        return "No poco_helper extension found!"
+        local w, h = window.get_size()
+        return poco_helper.dump(PocoManager.view_proj, PocoManager.gui_view_proj)
     end,
     Click = function(x, y)
         x, y = unit_to_screen(x, y)
@@ -97,6 +101,11 @@ local callbacks = {
 
 
 function PocoManager:init_server(port)
+    if poco_helper == nil then
+        print("extension-poco: The native code is missing, aborting Poco initalization")
+        return
+    end
+    print("POCO server init")
     port = port or 15004
     local server_sock, err = socket.tcp()
     assert(server_sock)
@@ -112,6 +121,10 @@ end
 
 -- TODO: perhaps drive this automatically from the extension update loop?
 function PocoManager:server_loop()
+    if poco_helper == nil then
+        return
+    end
+
     for _, c in pairs(self.clients) do
         c:drainOutputBuffer()
     end
@@ -157,12 +170,20 @@ function PocoManager:server_loop()
 end
 
 
-function PocoManager:setDispatchFn(method, fn)
+function PocoManager:set_dispatch_fn(method, fn)
     dispatcher[method] = fn
 end
 
-function PocoManager:setDispatchCallbackFn(method, fn)
+function PocoManager:set_dispatch_callback_fn(method, fn)
     callbacks[method] = fn
+end
+
+function PocoManager:set_view_proj(view_proj)
+    PocoManager.view_proj = view_proj
+end
+
+function PocoManager:set_gui_view_proj(gui_view_proj)
+    PocoManager.gui_view_proj = gui_view_proj
 end
 
 function PocoManager:onRequest(req)

@@ -1,4 +1,4 @@
-script: "/main/levels/dirtylarry.gui_script"
+script: "/main/levels/dirtylarry/dirtylarry.gui_script"
 fonts {
   name: "larryfont"
   font: "/dirtylarry/larryfont.font"
@@ -170,7 +170,7 @@ nodes {
 nodes {
   position {
     x: 138.0
-    y: 1038.0
+    y: 485.0
     z: 0.0
     w: 1.0
   }
@@ -438,7 +438,7 @@ nodes {
 nodes {
   position {
     x: 334.0
-    y: 912.0
+    y: 359.0
     z: 0.0
     w: 1.0
   }
@@ -596,8 +596,70 @@ nodes {
 }
 nodes {
   position {
+    x: 324.0
+    y: 284.0
+    z: 0.0
+    w: 1.0
+  }
+  rotation {
+    x: 0.0
+    y: 0.0
+    z: 0.0
+    w: 1.0
+  }
+  scale {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  size {
+    x: 200.0
+    y: 100.0
+    z: 0.0
+    w: 1.0
+  }
+  color {
+    x: 0.2
+    y: 0.2
+    z: 0.2
+    w: 1.0
+  }
+  type: TYPE_TEXT
+  blend_mode: BLEND_MODE_ALPHA
+  text: "Not logged in"
+  font: "larryfont"
+  id: "login_status"
+  xanchor: XANCHOR_NONE
+  yanchor: YANCHOR_NONE
+  pivot: PIVOT_CENTER
+  outline {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  shadow {
+    x: 1.0
+    y: 1.0
+    z: 1.0
+    w: 1.0
+  }
+  adjust_mode: ADJUST_MODE_FIT
+  line_break: false
+  layer: ""
+  inherit_alpha: true
+  alpha: 1.0
+  outline_alpha: 1.0
+  shadow_alpha: 1.0
+  template_node_child: false
+  text_leading: 1.0
+  text_tracking: 0.0
+}
+nodes {
+  position {
     x: 187.0
-    y: 665.0
+    y: 1010.0
     z: 0.0
     w: 1.0
   }
@@ -929,7 +991,7 @@ nodes {
 nodes {
   position {
     x: 194.0
-    y: 550.0
+    y: 895.0
     z: 0.0
     w: 1.0
   }
@@ -1088,7 +1150,7 @@ nodes {
 nodes {
   position {
     x: 194.0
-    y: 466.0
+    y: 811.0
     z: 0.0
     w: 1.0
   }
@@ -1246,70 +1308,8 @@ nodes {
 }
 nodes {
   position {
-    x: 324.0
-    y: 803.0
-    z: 0.0
-    w: 1.0
-  }
-  rotation {
-    x: 0.0
-    y: 0.0
-    z: 0.0
-    w: 1.0
-  }
-  scale {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-    w: 1.0
-  }
-  size {
-    x: 200.0
-    y: 100.0
-    z: 0.0
-    w: 1.0
-  }
-  color {
-    x: 0.2
-    y: 0.2
-    z: 0.2
-    w: 1.0
-  }
-  type: TYPE_TEXT
-  blend_mode: BLEND_MODE_ALPHA
-  text: "Not logged in"
-  font: "larryfont"
-  id: "login_status"
-  xanchor: XANCHOR_NONE
-  yanchor: YANCHOR_NONE
-  pivot: PIVOT_CENTER
-  outline {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-    w: 1.0
-  }
-  shadow {
-    x: 1.0
-    y: 1.0
-    z: 1.0
-    w: 1.0
-  }
-  adjust_mode: ADJUST_MODE_FIT
-  line_break: false
-  layer: ""
-  inherit_alpha: true
-  alpha: 1.0
-  outline_alpha: 1.0
-  shadow_alpha: 1.0
-  template_node_child: false
-  text_leading: 1.0
-  text_tracking: 0.0
-}
-nodes {
-  position {
     x: 463.0
-    y: 515.0
+    y: 860.0
     z: 0.0
     w: 1.0
   }
@@ -1371,7 +1371,7 @@ nodes {
 nodes {
   position {
     x: 194.0
-    y: 312.0
+    y: 657.0
     z: 0.0
     w: 1.0
   }
@@ -1530,7 +1530,7 @@ nodes {
 nodes {
   position {
     x: 464.0
-    y: 317.0
+    y: 662.0
     z: 0.0
     w: 1.0
   }

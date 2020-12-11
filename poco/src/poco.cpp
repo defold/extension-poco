@@ -30,17 +30,11 @@ static int Poco_Dump(lua_State* L)
 {
     DM_LUA_STACK_CHECK(L, 1);
 
-    bool only_visible_node = false;
-    if (lua_isboolean(L, 1))
-        only_visible_node = lua_toboolean(L, 1);
-    else
-        return DM_LUA_ERROR("Expected boolean for argument 1");
-
-    lua_Number screen_width = luaL_checknumber(L, 2);
-    lua_Number screen_height = luaL_checknumber(L, 3);
+    dmVMath::Matrix4* view_proj = dmScript::CheckMatrix4(L, 1);
+    dmVMath::Matrix4* gui_view_proj = dmScript::CheckMatrix4(L, 2);
 
     // Creates a table
-    dmPoco::DumpToLuaTable(g_Poco.m_Register, screen_width, screen_height, L);
+    dmPoco::DumpToLuaTable(L, g_Poco.m_Register, *view_proj, *gui_view_proj);
 
     return 1;
 }

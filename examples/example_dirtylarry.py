@@ -17,32 +17,29 @@ poco = StdPoco(addr=(options.address, options.port), device=device, use_airtest_
 # ************************************************************************************************
 
 
-print(poco.agent.input, type(poco.agent.input))
-
 # load collection
 print("Loading Dirty Larry example")
 poco("bn_dirtylarry/larrybutton").click()
 
-
-# INPUT TEST
-poco("input_email/bg").click()
-
-poco.agent.input.keyevent('test@mail.coo{KEY_BACKSPACE}m')
-
-poco("bn_login/larrybutton").click()
-
-login_status = poco("login_status").get_text()
-
-print("login_status:", login_status)
-
-
 # SLIDER TEST
+slider = poco("slider/larryslider")
+
+print("slider: anchorPoint", slider.attr('anchorPoint'))
+
+poco("slider/larryslider").click(focus='center')
+slider_value = poco("slider/larryvalue").get_text()
+print("slider value:", slider_value)
+
+poco("slider/larryslider").click(focus=[0.5,0.5])
+slider_value = poco("slider/larryvalue").get_text()
+print("slider value:", slider_value)
+
 
 poco("slider/larryslider").click(focus=[0.0,0.0])
 slider_value = poco("slider/larryvalue").get_text()
 print("slider value:", slider_value)
 
-poco("slider/larryslider").click(focus=[2.0,0.0])
+poco("slider/larryslider").click(focus=[1.0,0.0])
 slider_value = poco("slider/larryvalue").get_text()
 print("slider value:", slider_value)
 
@@ -63,10 +60,35 @@ checkbox_value = poco("checkbox_value").get_text()
 print("checkbox value:", checkbox_value)
 
 
+# INPUT TEST
+poco("input_email/bg").click()
+
+poco.agent.input.keyevent('test@mail.coo{KEY_BACKSPACE}m')
+
+poco("bn_login/larrybutton").click()
+
+login_status = poco("login_status").get_text()
+
+print("login_status:", login_status)
+
+
 # EXIT
 print("Sleeping before exiting")
-time.sleep(2)
+time.sleep(1)
 poco("bn_back/larrybutton").click()
 
 print("Done")
+
+
+"""
+
+MANUAL CLICK
+    LEFT:
+        DEBUG:SCRIPT: TOUCH:    hash: [touch]   190.25  658.75  380 1318
+    RIGHT:
+        DEBUG:SCRIPT: TOUCH:    hash: [touch]   484.75  657.25  969 1315
+
+"""
+
+
 

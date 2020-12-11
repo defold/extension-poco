@@ -16,23 +16,28 @@ poco = StdPoco(addr=(options.address, options.port), device=device, use_airtest_
 
 # ************************************************************************************************
 
+# For UIObjectProxy documentation, see https://poco-chinese.readthedocs.io/en/latest/source/poco.proxy.html
 
-print(poco.agent.input, type(poco.agent.input))
+# load level
+print("Loading level 2")
+poco("bn_level2/larrybutton").click()
 
-# load collection
-print("Loading Druid example")
-poco("bn_druid/larrybutton").click()
+# In this test, we will go to each object in a certain sequence
+animal_names = ["/parrot1", "/parrot4", "/parrot", "/parrot2", "/parrot3"]
+for animal in animal_names:
+    print("Go to", animal)
+    child = poco(animal).child('sprite')
+    print(animal, child.get_position(), child.get_size())
+    child.click(sleep_interval=0.01)
+    time.sleep(0.6)
 
 
-poco("scroll_view").swipe([-0.8, 0.0], duration=0.5)
-time.sleep(1)
-poco("scroll_view").swipe([0.4, 0.0], duration=0.5)
-time.sleep(1)
+score = poco("score").get_text()
+
+print("SCORE", score)
+assert score == "Score: 500"
 
 
-# EXIT
-print("Sleeping before exiting")
-time.sleep(1)
 poco("bn_back/larrybutton").click()
 
 print("Done")

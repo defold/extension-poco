@@ -1,0 +1,25 @@
+local rendercam = require "rendercam.rendercam"
+
+function init(self)
+	-- Add initialization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function final(self)
+	-- Add finalization code here
+	-- Learn more: https://defold.com/manuals/script/
+	-- Remove this function if not needed
+end
+
+function update(self, dt)
+	
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("trigger_response") and message.enter then
+		--go.delete(msg.url(nil, message.other_id, nil))
+		msg.post("gui", "add_score", {score = 100})
+	end
+end
+

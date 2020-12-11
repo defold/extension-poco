@@ -1,16 +1,28 @@
 local poco = require('poco.lua.defold-poco')
+local rendercam = require "rendercam.rendercam"
+
+local function get_view_proj()
+    local view = rendercam.calculate_view()
+    local proj = rendercam.calculate_proj()
+    return proj * view
+end
+
+local function get_gui_view_proj()
+    local mat = vmath.matrix4_orthographic(0, rendercam.window.x, 0, rendercam.window.y, -1, 1)
+    return mat
+end
 
 function init(self)
     msg.post("@render:", "use_fixed_fit_projection", { near = -1, far = 1 })
 
     poco:init_server(15004)
 
-    poco:setDispatchFn("TestNewFunction", function(x, y, z)
+    poco:set_dispatch_fn("TestNewFunction", function(x, y, z)
             print("INSIDE NEW CLIENT TEST FUNCTION!", x, y, z)
             return {message= "" .. (x + y + z)}
         end)
 
-    poco:setDispatchCallbackFn("Dump", function(scene)
+    poco:set_dispatch_callback_fn("Dump", function(scene)
             --pprint("INSIDE NEW CALLBACK FUNCTION!", scene)
             return scene
         end)
@@ -18,10 +30,15 @@ function init(self)
     msg.post("levels", "acquire_input_focus")
 
     self.current = "menu"
-    msg.post("levels#menu", "async_load")
+
+    --self.current = "dirtylarry"
+    msg.post("levels#" .. self.current, "async_load")
 end
 
 function update(self, dt)
+    poco:set_view_proj(get_view_proj())
+    poco:set_gui_view_proj(get_gui_view_proj())
+
     poco:server_loop()
 end
 

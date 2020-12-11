@@ -3,8 +3,8 @@ scale_along_z: 0
 embedded_instances {
   id: "go"
   data: "components {\n"
-  "  id: \"druid\"\n"
-  "  component: \"/main/levels/druid.gui\"\n"
+  "  id: \"foo\"\n"
+  "  component: \"/main/levels/foo.gui\"\n"
   "  position {\n"
   "    x: 0.0\n"
   "    y: 0.0\n"

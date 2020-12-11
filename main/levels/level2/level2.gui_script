@@ -1,0 +1,26 @@
+local dirtylarry = require "dirtylarry/dirtylarry"
+
+function init(self)
+	msg.post(".", "acquire_input_focus")
+	self.score = 0
+end
+
+function final(self)
+	msg.post(".", "release_input_focus")
+end
+
+function update(self, dt)
+end
+
+function on_message(self, message_id, message, sender)
+	if message_id == hash("add_score") then
+		self.score = self.score + message.score
+		gui.set_text(gui.get_node("score"), "Score: " .. self.score)
+	end
+end
+
+function on_input(self, action_id, action)
+	dirtylarry:button("bn_back", action_id, action, function ()
+		msg.post(msg.url("main", "/controller", "script"), "load_level", {name="menu"})
+	end)
+end
