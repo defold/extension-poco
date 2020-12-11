@@ -24,11 +24,13 @@ function on_input(self, action_id, action)
 		local mouse = rendercam.screen_to_world_2d(action.screen_x, action.screen_y)
 		local diff = mouse - center
 
+		--[[
 		print("LEVEL2: touch  x/y", action.x, action.y)
 		print("LEVEL2: touch  screen x/y", action.screen_x, action.screen_y)
 		print("LEVEL2: center", center)
 		print("LEVEL2: mouse", mouse)
 		print("LEVEL2: diff", diff)
+		--]]
 
 		local pos = go.get_position(self.player)
 		local target = pos + diff
