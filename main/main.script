@@ -1,10 +1,62 @@
+local poco = require('poco.lua.defold-poco')
+local rendercam = require "rendercam.rendercam"
+
+local function get_view_proj()
+    local view = rendercam.calculate_view()
+    local proj = rendercam.calculate_proj()
+    return proj * view
+end
+
+local function get_gui_view_proj()
+    local mat = vmath.matrix4_orthographic(0, rendercam.window.x, 0, rendercam.window.y, -1, 1)
+    return mat
+end
+
 function init(self)
-	msg.post(".", "acquire_input_focus")
-	msg.post("@render:", "use_fixed_fit_projection", { near = -1, far = 1 })
+    msg.post("@render:", "use_fixed_fit_projection", { near = -1, far = 1 })
+
+    poco:init_server(15004)
+
+    poco:set_dispatch_fn("TestNewFunction", function(x, y, z)
+            print("INSIDE NEW CLIENT TEST FUNCTION!", x, y, z)
+            return {message= "" .. (x + y + z)}
+        end)
+
+    poco:set_dispatch_callback_fn("Dump", function(scene)
+            --pprint("INSIDE NEW CALLBACK FUNCTION!", scene)
+            return scene
+        end)
+
+    msg.post("levels", "acquire_input_focus")
+
+    self.current = "menu"
+
+    --self.current = "dirtylarry"
+    msg.post("levels#" .. self.current, "async_load")
+end
+
+function update(self, dt)
+    poco:set_view_proj(get_view_proj())
+    poco:set_gui_view_proj(get_gui_view_proj())
+
+    poco:server_loop()
 end
 
 function on_input(self, action_id, action)
-	if action_id == hash("touch") and action.pressed then
-		print("Touch!")
-	end
+end
+
+function on_message(self, message_id, message, sender)
+    if message_id == hash("proxy_loaded") then
+        msg.post(sender, "init")
+        msg.post(sender, "enable")
+
+    elseif message_id == hash("load_level") then
+        local url = msg.url(nil, "/levels", self.current)
+        msg.post(url, "disable")
+        msg.post(url, "unload")
+
+        self.current = message.name
+
+        msg.post(msg.url(nil, "/levels", message.name), "async_load")
+    end
 end

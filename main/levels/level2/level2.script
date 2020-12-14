@@ -1,0 +1,41 @@
+local rendercam = require "rendercam.rendercam"
+
+function init(self)
+	msg.post(".", "acquire_input_focus")
+
+	self.player = msg.url(nil, "player", nil)
+	self.camera = msg.url(nil, "player_camera", nil)
+	self.score = 0
+
+	go.set_parent(self.camera, self.player)
+end
+
+function final(self)
+	msg.post(".", "release_input_focus")
+end
+
+function on_message(self, message_id, message, sender)
+end
+
+function on_input(self, action_id, action)
+	if action_id == hash("touch") and action.pressed then
+		local width, height = window.get_size()		
+		local center = rendercam.screen_to_world_2d(width/2, height/2)
+		local mouse = rendercam.screen_to_world_2d(action.screen_x, action.screen_y)
+		local diff = mouse - center
+
+		--[[
+		print("LEVEL2: touch  x/y", action.x, action.y)
+		print("LEVEL2: touch  screen x/y", action.screen_x, action.screen_y)
+		print("LEVEL2: center", center)
+		print("LEVEL2: mouse", mouse)
+		print("LEVEL2: diff", diff)
+		--]]
+
+		local pos = go.get_position(self.player)
+		local target = pos + diff
+		go.cancel_animations(self.player, "position")
+		go.animate(self.player, "position", go.PLAYBACK_ONCE_FORWARD, target, go.EASING_INOUTCUBIC, 0.5)
+	end
+end
+
