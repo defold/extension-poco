@@ -51,6 +51,27 @@ Update the PocoManager instance continuously:
         poco:server_loop()
     end
 
+You also need to set the view projection matrices (e.g. on resize event).
+The default values are the identity matrix.
+
+    poco:set_view_proj(get_view_proj()) -- view projection matrix from render script
+    poco:set_gui_view_proj(get_gui_view_proj()) -- view projection matrix from render script
+
+Here's an example using [rendercam](https://github.com/rgrams/rendercam):
+
+    local rendercam = require "rendercam.rendercam"
+
+    local function get_view_proj()
+        local view = rendercam.calculate_view()
+        local proj = rendercam.calculate_proj()
+        return proj * view
+    end
+
+    local function get_gui_view_proj()
+        local mat = vmath.matrix4_orthographic(0, rendercam.window.x, 0, rendercam.window.y, -1, 1)
+        return mat
+    end
+
 ### Custom function
 
 You can add a custom function that you can call from the client scripts:
