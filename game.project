@@ -2,6 +2,9 @@
 title = extension-poco
 dependencies = https://github.com/andsve/dirtylarry/archive/master.zip,https://github.com/Insality/druid/archive/master.zip,https://github.com/rgrams/rendercam/archive/1.0.3.zip
 
+[library]
+include_dirs = poco
+
 [bootstrap]
 main_collection = /main/main.collectionc
 render = /rendercam/rendercam.renderc
@@ -50,4 +53,3 @@ clear_color_red = 1.0
 clear_color_green = 1.0
 clear_color_blue = 1.0
 clear_color_alpha = 1.0
-
