@@ -78,7 +78,7 @@ You can add a custom function that you can call from the client scripts:
 
 Server:
 
-    poco:setDispatchFn("TestNewFunction", function(x, y, z)
+    poco:set_dispatch_fn("TestNewFunction", function(x, y, z)
             print("INSIDE NEW CLIENT TEST FUNCTION!", x, y, z)
             return {message= "" .. (x + y + z)}
         end)
@@ -93,7 +93,7 @@ Client:
 
 You can also add a hook to an existing function, in order to manipulate the result before it's returned to the client.
 
-    poco:setDispatchCallbackFn("Dump", function(scene)
+    poco:set_dispatch_callback_fn("Dump", function(scene)
         pprint("INSIDE NEW CALLBACK FUNCTION!", scene)
         return scene
     end)
