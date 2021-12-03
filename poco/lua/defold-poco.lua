@@ -87,8 +87,22 @@ local dispatcher = {
         return true
     end,
     Execute = function(msg)
-        local f = loadstring(msg)
-        local res = f()
+        local ok, pcall_result = pcall(loadstring, msg)
+        if not ok then
+            local errmsg = "Failed to loadstring '" .. msg .. "'. Error: " .. pcall_result
+            print(errmsg)
+            return errmsg
+        end
+        local f = pcall_result
+        
+        ok, pcall_result = pcall(f)
+        if not ok then
+            local errmsg = "Failed to run '" .. msg .. "'. Error: " .. pcall_result
+            print(errmsg)
+            return errmsg
+        end
+        local res = pcall_result
+
         if res ~= nil then
             return res
         end
