@@ -29,6 +29,11 @@ time.sleep(1)
 poco("scroll_view").swipe([0.4, 0.0], duration=0.5)
 time.sleep(1)
 
+# INPUT TEST
+poco("bg").click()
+# in Druid ESC hide keyboard
+poco.agent.input.keyevent('test@mail.coo{KEY_BACKSPACE}m{KEY_ESC}')
+
 
 # EXIT
 print("Sleeping before exiting")

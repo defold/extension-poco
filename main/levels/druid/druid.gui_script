@@ -5,9 +5,11 @@ function init(self)
 
 	self.button = self.druid:new_button("bn_back/larrybutton", function (self, params, button_instance)
 			msg.post(msg.url("main", "/controller", "script"), "load_level", {name="menu"})
-		end)
+	end)
 
-		self.scroll = self.druid:new_scroll("scroll_view", "scroll_content")
+	self.scroll = self.druid:new_scroll("scroll_view", "scroll_content")
+
+	self.input = self.druid:new_input("bg", "content")
 end
 
 function final(self)
@@ -24,6 +26,5 @@ function on_message(self, message_id, message, sender)
 end
 
 function on_input(self, action_id, action)
-	
 	return self.druid:on_input(action_id, action)
 end
