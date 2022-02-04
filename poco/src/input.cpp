@@ -198,13 +198,12 @@ static bool UpdateKeyEvent(dmHID::HContext context, dmHID::HKeyboard keyboard, f
         {
             dmHID::SetKey(keyboard, key, true);
             ev.m_KeyCodesIndex += key_string_len + 2; // '{' + text + '}'
-            return false;
+            return ev.m_KeyCodesIndex == ev.m_KeyCodesLen;
         }
     }
 
     ev.m_KeyCodesIndex++;
     dmHID::AddKeyboardChar(context, c);
-
     return ev.m_KeyCodesIndex == ev.m_KeyCodesLen;
 }
 
