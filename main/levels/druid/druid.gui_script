@@ -1,4 +1,7 @@
 local druid = require("druid.druid")
+local input = require("druid.extended.input")
+
+druid.register("input", input)
 
 function init(self)
 	self.druid = druid.new(self)
